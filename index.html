@@ -178,7 +178,7 @@ code {
 </style>
 </head>
 <body>
-<div class="main">
+<div class="main" id="app">
 <h1>Password Generator</h1>
 <table cellspacing="0" border="0">
     <tr>
@@ -230,10 +230,15 @@ code {
     function $(id){
         return document.getElementById(id);
     }
+    function getQuery(key) {
+        var search = new URLSearchParams(window.location.search);
+        return search.get(key)
+        
     var type = $('type');
     var length = $('length');
     var hmac = $('hmac');
     var content = $('content');
+    var result = $('result');
     function getLen(){
         return Math.max(parseInt(length.value) || 14, 4);
     }
@@ -284,6 +289,23 @@ code {
             range();
         }
     } catch(e) {}
+    // get url params and auto gen
+    var query_hmac = getQuery('hmac')
+    var query_content = getQuery('content')
+    if (query_hmac && query_content) {
+        hmac.value = query_hmac
+        content.value = query_content
+        var query_length = getQuery('length')
+        var query_type = getQuery('type')
+        if (query_length) {
+            length.value = query_length
+        }
+        if (query_type) {
+            type.value = query_type
+        }
+        gen();
+        $('app').innerHTML = result.innerHTML;
+    }
 })();
 </script>
 </body>
